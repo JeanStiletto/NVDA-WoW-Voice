@@ -1,0 +1,99 @@
+# NVDA Voice for WoW
+
+Makes the NVDA screen reader the voice of World of Warcraft.
+
+World of Warcraft has built-in text to speech and can use any Windows SAPI voice.
+The SAPI2SR bridge voice forwards everything spoken with it to NVDA. Since late
+2025 the game refuses to load **unsigned** voice engines, so the bridge voice
+shows up in the voice list but stays silent. This setup installs the bridge and
+signs it on your own computer so the game loads it again.
+
+You do not need the Sku addon for this. (Sku's own installer does the same step.)
+
+## Download
+
+**[Download NvdaWowVoiceSetup.exe (latest version)](https://github.com/JeanStiletto/NVDA-WoW-Voice/releases/latest/download/NvdaWowVoiceSetup.exe)**
+
+Run it, accept the administrator prompt, read the short explanation and press
+Install. The setup speaks every step through your screen reader and tells you
+when it is finished. English, German and French, chosen from your Windows
+language.
+
+## Before you start
+
+- Close World of Warcraft completely. The setup checks this and asks you to
+  close it if it is still running.
+- NVDA must be running while you play.
+
+## After the setup
+
+1. Start NVDA.
+2. Start World of Warcraft.
+3. In the game's text to speech settings, choose the voice **SAPI2SR**.
+
+Running the setup again repairs or updates the voice.
+
+## What exactly it does
+
+1. Copies the SAPI2SR voice files to `C:\Program Files\SAPI2SR` and
+   `C:\Program Files (x86)\SAPI2SR`.
+2. Registers the voice with Windows (`regsvr32`), under the name SAPI2SR.
+3. Runs the signing script (`signing/sku-nvda-voice-sign.ps1`, also bundled in
+   the exe) which:
+   - creates a **fresh certificate on your computer**, valid for code signing only;
+   - signs only the two voice engine DLLs, and only if their hash matches the
+     versions pinned in the script;
+   - **deletes the private key right after signing**, so the certificate can
+     never sign anything else;
+   - writes a receipt and log to `C:\ProgramData\Sku\`.
+4. Checks that the voice is registered.
+
+Log file of the setup: `C:\ProgramData\Sku\nvda-wow-voice-setup.log`.
+
+To undo the signing, run the script with `-Mode Uninstall` in an administrator
+PowerShell. `-Mode Verify` shows a read-only health report.
+
+## Risk
+
+This is an unofficial workaround. It does not touch the game's files or memory,
+it only lets the game load a normal Windows voice again. Still, Blizzard did not
+approve it, a future game patch may silence the voice again, and you use it at
+your own risk.
+
+## Credits
+
+- **SAPI2SR** — the NVDA SAPI bridge voice, third-party software. The 64-bit
+  engine bundled here is patched so it works with the current WoW text to speech
+  (skips WoW's boundary bookmarks, and supports interrupting speech).
+- **NVDA Controller Client** — NV Access.
+- Part of the [Sku](https://github.com/Sku75/Sku-WoW-Addon-TBC) project.
+
+## Building
+
+.NET SDK with the .NET Framework 4.8 targeting pack:
+
+```
+dotnet build NvdaWowVoice.csproj -c Release
+```
+
+Releasing (maintainers): bump `<Version>` in `NvdaWowVoice.csproj`, then
+`.\release.ps1 -Notes "what changed"`.
+
+---
+
+# NVDA-Stimme für WoW (Deutsch)
+
+Macht NVDA zur Stimme von World of Warcraft. Das Setup installiert die
+NVDA-Brückenstimme SAPI2SR und signiert sie auf deinem Computer, denn das Spiel
+lädt seit Ende 2025 keine unsignierten Stimmen mehr. Das Sku-Addon brauchst du
+dafür nicht.
+
+**[NvdaWowVoiceSetup.exe herunterladen (neueste Version)](https://github.com/JeanStiletto/NVDA-WoW-Voice/releases/latest/download/NvdaWowVoiceSetup.exe)**
+
+1. World of Warcraft vollständig schließen.
+2. Setup starten, Administrator-Abfrage bestätigen, Installieren drücken. Jeder
+   Schritt wird vorgelesen.
+3. NVDA starten, WoW starten und in den Text-zu-Sprache-Einstellungen des Spiels
+   die Stimme **SAPI2SR** wählen.
+
+Inoffizieller Workaround, Nutzung auf eigenes Risiko.
