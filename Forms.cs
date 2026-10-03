@@ -108,8 +108,9 @@ namespace NvdaWowVoice
         }
     }
 
-    /// <summary>Runs the setup on a worker thread; every step is appended to
-    /// the text box and spoken. Cannot be closed while running.</summary>
+    /// <summary>Runs the setup on a worker thread (the bridge voice, then the
+    /// Windows voices); every step is appended to the text box and spoken.
+    /// Cannot be closed while running.</summary>
     internal sealed class ProgressForm : StepForm
     {
         public List<string> Problems { get; private set; } = new List<string>();
@@ -126,7 +127,12 @@ namespace NvdaWowVoice
         {
             base.OnShown(e);
             _running = true;
-            Problems = await Task.Run(() => BridgeSetup.Run(Report));
+            Problems = await Task.Run(() =>
+            {
+                var problems = BridgeSetup.Run(Report);
+                problems.AddRange(WindowsVoices.Run(Report));
+                return problems;
+            });
             _running = false;
             Close();
         }

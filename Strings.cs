@@ -39,11 +39,13 @@ namespace NvdaWowVoice
                 "1. Installs the NVDA bridge voice SAPI2SR into the SAPI2SR folders under Program Files.\n" +
                 "2. Registers it as a Windows speech voice named SAPI2SR.\n" +
                 "3. Signs the voice on this computer. World of Warcraft refuses to load unsigned voices, so without this step the voice stays silent in the game. " +
-                "The certificate is created on this computer only, and its private key is deleted right after signing, so it can never sign anything else.\n\n" +
+                "The certificate is created on this computer only, and its private key is deleted right after signing, so it can never sign anything else.\n" +
+                "4. Makes the other Windows voices available to the game. Windows keeps its newer voices (for example Katja and Stefan for German) in a separate list the game cannot see; this copies their entries into the game's list. " +
+                "The voices themselves are not changed, and the list is backed up first.\n\n" +
                 "Before you start:\n" +
                 "- Close World of Warcraft completely.\n" +
                 "- NVDA must be running while you play.\n\n" +
-                "Running this setup again repairs or updates the voice.\n\n" +
+                "Running this setup again repairs or updates the voice, and adds Windows voices installed since (in the Windows settings under Time and Language, Speech).\n\n" +
                 "Press Install to start, or Cancel to quit without changing anything.",
             ["welcome.textAcc"] = "Description",
             ["welcome.install"] = "&Install",
@@ -57,15 +59,21 @@ namespace NvdaWowVoice
             ["step.register"] = "Registering the SAPI2SR voice with Windows…",
             ["step.sign"] = "Signing the voice so World of Warcraft will load it. This can take up to a minute…",
             ["step.check"] = "Checking the installation…",
+            ["step.voices"] = "Making the other Windows voices available to the game…",
+            ["step.voicesNone"] = "All Windows voices were already available to the game.",
+            ["step.voiceAdded"] = "Added the voice {0}.",
+            ["step.voicesAdded"] = "Windows voices added: {0}.",
             ["done.ok.heading"] = "Finished. The NVDA voice is ready.",
             ["done.ok.text"] =
-                "The SAPI2SR voice is installed, registered and signed.\n\n" +
+                "The SAPI2SR voice is installed, registered and signed, and the game can use every Windows voice of this computer.\n\n" +
                 "Next steps:\n" +
                 "1. Start NVDA if it is not running.\n" +
                 "2. Start World of Warcraft.\n" +
                 "3. In the game's text to speech settings, choose the voice SAPI2SR. " +
-                "Everything the game speaks with that voice is now read by NVDA.",
-            ["done.fail.heading"] = "Not finished. The NVDA voice may not work.",
+                "Everything the game speaks with that voice is now read by NVDA.\n\n" +
+                "The game numbers its voices by their place in the Windows list, so added voices can change those numbers. " +
+                "If a voice in the game or in an addon sounds different than before, choose it again.",
+            ["done.fail.heading"] = "Not finished. Some steps did not work.",
             ["done.fail.text"] = "These problems occurred:\n{0}\n\nFix the cause and run this setup again.\n\nLog file: {1}",
             ["done.close"] = "&Close",
             ["done.openLog"] = "&Open log in Notepad",
@@ -82,6 +90,9 @@ namespace NvdaWowVoice
             ["err.sign.6"] = "a voice engine file is missing.",
             ["err.sign.7"] = "a voice file is in use. Close World of Warcraft completely and run this setup again.",
             ["err.notRegistered"] = "- The SAPI2SR voice is not registered with Windows.",
+            ["err.voicesBackup"] = "- The voice list could not be backed up, so no Windows voices were added.",
+            ["err.voice"] = "- The voice {0} could not be added ({1}).",
+            ["err.voices"] = "- Adding the Windows voices failed: {0}",
             ["err.unexpected"] = "- Unexpected error: {0}",
         };
 
@@ -95,11 +106,13 @@ namespace NvdaWowVoice
                 "1. Installiert die NVDA-Brückenstimme SAPI2SR in die SAPI2SR-Ordner unter Programme.\n" +
                 "2. Registriert sie als Windows-Sprachstimme mit dem Namen SAPI2SR.\n" +
                 "3. Signiert die Stimme auf diesem Computer. World of Warcraft lädt keine unsignierten Stimmen, ohne diesen Schritt bleibt die Stimme im Spiel stumm. " +
-                "Das Zertifikat wird nur auf diesem Computer erzeugt, und sein privater Schlüssel wird direkt nach dem Signieren gelöscht, es kann also nie etwas anderes signieren.\n\n" +
+                "Das Zertifikat wird nur auf diesem Computer erzeugt, und sein privater Schlüssel wird direkt nach dem Signieren gelöscht, es kann also nie etwas anderes signieren.\n" +
+                "4. Macht die übrigen Windows-Stimmen für das Spiel verfügbar. Windows führt seine neueren Stimmen (für Deutsch zum Beispiel Katja und Stefan) in einer eigenen Liste, die das Spiel nicht sieht; das Setup kopiert ihre Einträge in die Liste des Spiels. " +
+                "Die Stimmen selbst bleiben unverändert, und die Liste wird vorher gesichert.\n\n" +
                 "Bevor du startest:\n" +
                 "- Schließe World of Warcraft vollständig.\n" +
                 "- NVDA muss beim Spielen laufen.\n\n" +
-                "Wenn du dieses Setup erneut ausführst, wird die Stimme repariert oder aktualisiert.\n\n" +
+                "Wenn du dieses Setup erneut ausführst, wird die Stimme repariert oder aktualisiert, und seitdem installierte Windows-Stimmen kommen dazu (in den Windows-Einstellungen unter Zeit und Sprache).\n\n" +
                 "Drücke Installieren zum Starten, oder Abbrechen, um ohne Änderungen zu beenden.",
             ["welcome.textAcc"] = "Beschreibung",
             ["welcome.install"] = "&Installieren",
@@ -113,15 +126,21 @@ namespace NvdaWowVoice
             ["step.register"] = "Registriere die Stimme SAPI2SR bei Windows…",
             ["step.sign"] = "Signiere die Stimme, damit World of Warcraft sie lädt. Das kann bis zu einer Minute dauern…",
             ["step.check"] = "Prüfe die Installation…",
+            ["step.voices"] = "Mache die übrigen Windows-Stimmen für das Spiel verfügbar…",
+            ["step.voicesNone"] = "Alle Windows-Stimmen waren schon für das Spiel verfügbar.",
+            ["step.voiceAdded"] = "Stimme {0} hinzugefügt.",
+            ["step.voicesAdded"] = "Windows-Stimmen hinzugefügt: {0}.",
             ["done.ok.heading"] = "Fertig. Die NVDA-Stimme ist bereit.",
             ["done.ok.text"] =
-                "Die Stimme SAPI2SR ist installiert, registriert und signiert.\n\n" +
+                "Die Stimme SAPI2SR ist installiert, registriert und signiert, und das Spiel kann jede Windows-Stimme dieses Computers nutzen.\n\n" +
                 "Nächste Schritte:\n" +
                 "1. Starte NVDA, falls es nicht läuft.\n" +
                 "2. Starte World of Warcraft.\n" +
                 "3. Wähle in den Text-zu-Sprache-Einstellungen des Spiels die Stimme SAPI2SR. " +
-                "Alles, was das Spiel mit dieser Stimme spricht, liest jetzt NVDA vor.",
-            ["done.fail.heading"] = "Nicht fertig. Die NVDA-Stimme funktioniert eventuell nicht.",
+                "Alles, was das Spiel mit dieser Stimme spricht, liest jetzt NVDA vor.\n\n" +
+                "Das Spiel nummeriert seine Stimmen nach ihrem Platz in der Windows-Liste, neue Stimmen können diese Nummern also verschieben. " +
+                "Klingt eine Stimme im Spiel oder in einem Addon anders als vorher, wähle sie neu.",
+            ["done.fail.heading"] = "Nicht fertig. Einige Schritte haben nicht geklappt.",
             ["done.fail.text"] = "Diese Probleme sind aufgetreten:\n{0}\n\nBehebe die Ursache und führe das Setup erneut aus.\n\nProtokolldatei: {1}",
             ["done.close"] = "&Schließen",
             ["done.openLog"] = "Protokoll im &Editor öffnen",
@@ -138,6 +157,9 @@ namespace NvdaWowVoice
             ["err.sign.6"] = "eine Stimm-Engine-Datei fehlt.",
             ["err.sign.7"] = "eine Stimmdatei ist in Benutzung. Schließe World of Warcraft vollständig und führe das Setup erneut aus.",
             ["err.notRegistered"] = "- Die Stimme SAPI2SR ist nicht bei Windows registriert.",
+            ["err.voicesBackup"] = "- Die Stimmenliste konnte nicht gesichert werden, deshalb wurden keine Windows-Stimmen hinzugefügt.",
+            ["err.voice"] = "- Die Stimme {0} konnte nicht hinzugefügt werden ({1}).",
+            ["err.voices"] = "- Hinzufügen der Windows-Stimmen fehlgeschlagen: {0}",
             ["err.unexpected"] = "- Unerwarteter Fehler: {0}",
         };
 
@@ -151,11 +173,13 @@ namespace NvdaWowVoice
                 "1. Installe la voix passerelle NVDA SAPI2SR dans les dossiers SAPI2SR sous Program Files.\n" +
                 "2. L'enregistre comme voix Windows nommée SAPI2SR.\n" +
                 "3. Signe la voix sur cet ordinateur. World of Warcraft refuse de charger les voix non signées ; sans cette étape, la voix reste muette dans le jeu. " +
-                "Le certificat est créé uniquement sur cet ordinateur et sa clé privée est supprimée juste après la signature ; il ne peut donc jamais rien signer d'autre.\n\n" +
+                "Le certificat est créé uniquement sur cet ordinateur et sa clé privée est supprimée juste après la signature ; il ne peut donc jamais rien signer d'autre.\n" +
+                "4. Rend les autres voix Windows disponibles pour le jeu. Windows range ses voix plus récentes (par exemple Hortense, Julie et Paul pour le français) dans une liste à part que le jeu ne voit pas ; ce programme copie leurs entrées dans la liste du jeu. " +
+                "Les voix elles-mêmes ne sont pas modifiées, et la liste est sauvegardée avant.\n\n" +
                 "Avant de commencer :\n" +
                 "- Fermez complètement World of Warcraft.\n" +
                 "- NVDA doit être lancé pendant que vous jouez.\n\n" +
-                "Relancer ce programme répare ou met à jour la voix.\n\n" +
+                "Relancer ce programme répare ou met à jour la voix, et ajoute les voix Windows installées depuis (dans les paramètres Windows, sous Heure et langue).\n\n" +
                 "Appuyez sur Installer pour commencer, ou sur Annuler pour quitter sans rien modifier.",
             ["welcome.textAcc"] = "Description",
             ["welcome.install"] = "&Installer",
@@ -169,15 +193,21 @@ namespace NvdaWowVoice
             ["step.register"] = "Enregistrement de la voix SAPI2SR auprès de Windows…",
             ["step.sign"] = "Signature de la voix pour que World of Warcraft la charge. Cela peut prendre jusqu'à une minute…",
             ["step.check"] = "Vérification de l'installation…",
+            ["step.voices"] = "Mise à disposition des autres voix Windows pour le jeu…",
+            ["step.voicesNone"] = "Toutes les voix Windows étaient déjà disponibles pour le jeu.",
+            ["step.voiceAdded"] = "Voix {0} ajoutée.",
+            ["step.voicesAdded"] = "Voix Windows ajoutées : {0}.",
             ["done.ok.heading"] = "Terminé. La voix NVDA est prête.",
             ["done.ok.text"] =
-                "La voix SAPI2SR est installée, enregistrée et signée.\n\n" +
+                "La voix SAPI2SR est installée, enregistrée et signée, et le jeu peut utiliser toutes les voix Windows de cet ordinateur.\n\n" +
                 "Étapes suivantes :\n" +
                 "1. Lancez NVDA s'il n'est pas déjà lancé.\n" +
                 "2. Lancez World of Warcraft.\n" +
                 "3. Dans les réglages de synthèse vocale du jeu, choisissez la voix SAPI2SR. " +
-                "Tout ce que le jeu prononce avec cette voix est désormais lu par NVDA.",
-            ["done.fail.heading"] = "Non terminé. La voix NVDA risque de ne pas fonctionner.",
+                "Tout ce que le jeu prononce avec cette voix est désormais lu par NVDA.\n\n" +
+                "Le jeu numérote ses voix selon leur place dans la liste de Windows ; ajouter des voix peut donc changer ces numéros. " +
+                "Si une voix sonne autrement qu'avant dans le jeu ou dans un addon, choisissez-la de nouveau.",
+            ["done.fail.heading"] = "Non terminé. Certaines étapes n'ont pas abouti.",
             ["done.fail.text"] = "Ces problèmes sont survenus :\n{0}\n\nCorrigez la cause et relancez ce programme.\n\nFichier journal : {1}",
             ["done.close"] = "&Fermer",
             ["done.openLog"] = "&Ouvrir le journal dans le Bloc-notes",
@@ -194,6 +224,9 @@ namespace NvdaWowVoice
             ["err.sign.6"] = "un fichier du moteur vocal manque.",
             ["err.sign.7"] = "un fichier de la voix est utilisé. Fermez complètement World of Warcraft et relancez ce programme.",
             ["err.notRegistered"] = "- La voix SAPI2SR n'est pas enregistrée auprès de Windows.",
+            ["err.voicesBackup"] = "- La liste des voix n'a pas pu être sauvegardée ; aucune voix Windows n'a été ajoutée.",
+            ["err.voice"] = "- La voix {0} n'a pas pu être ajoutée ({1}).",
+            ["err.voices"] = "- L'ajout des voix Windows a échoué : {0}",
             ["err.unexpected"] = "- Erreur inattendue : {0}",
         };
     }

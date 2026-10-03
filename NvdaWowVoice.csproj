@@ -2,7 +2,8 @@
 
   <!-- Standalone "NVDA voice for WoW" setup: installs the SAPI2SR NVDA bridge
        voice (copy + register + local self-sign) so World of Warcraft can speak
-       through NVDA. Split out of the Sku installer for people who do not use Sku.
+       through NVDA, and makes the other Windows (OneCore) voices available to
+       the game. Split out of the Sku installer for people who do not use Sku.
        payload\sapi2sr-payload.zip is a copy of the Sku installer's payload;
        release.ps1 warns when the two differ.
        net48 WinForms: native controls are read by NVDA/JAWS, and UIA
@@ -16,12 +17,13 @@
     <RootNamespace>NvdaWowVoice</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- 1.0 = first standalone build; bundles the SkuInstaller 5.2 payload
-         (bookmark fix + skuint interrupt x64 engine, bare x86 engine). -->
-    <Version>1.0</Version>
+         (bookmark fix + skuint interrupt x64 engine, bare x86 engine).
+         1.1 = also copies the Windows OneCore voices into the SAPI voice list. -->
+    <Version>1.1</Version>
     <Company>Sku</Company>
     <Product>NVDA Voice for WoW</Product>
     <AssemblyTitle>NVDA Voice for WoW - installs the NVDA SAPI bridge voice so World of Warcraft can speak through NVDA</AssemblyTitle>
-    <Description>Installs the SAPI2SR NVDA bridge voice and signs it locally so World of Warcraft loads it. Part of the Sku project. https://github.com/Sku75/Sku-WoW-Addon-TBC</Description>
+    <Description>Installs the SAPI2SR NVDA bridge voice and signs it locally so World of Warcraft loads it, and makes the other Windows voices available to the game. Part of the Sku project. https://github.com/Sku75/Sku-WoW-Addon-TBC</Description>
     <Authors>JeanStiletto</Authors>
     <Copyright>Copyright (c) 2026 JeanStiletto and the Sku contributors</Copyright>
   </PropertyGroup>
