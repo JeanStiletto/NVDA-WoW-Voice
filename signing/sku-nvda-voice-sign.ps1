@@ -42,9 +42,18 @@ param(
 	[string]$Mode = 'Install',
 	[string[]]$DllPaths = @(
 		'C:\Program Files\SAPI2SR\sapi2sr_engine.dll',
-		'C:\Program Files (x86)\SAPI2SR\sapi2sr_engine.dll'
+		'C:\Program Files (x86)\SAPI2SR\sapi2sr_engine.dll',
+		'C:\Program Files\SAPI2SR\nvdaControllerClient.dll'
 	)
 )
+
+# Targets that may be absent or not ours: the speech-history
+# nvdaControllerClient.dll (speech-history/). The engine loads it, so once it
+# is ours it must be signed like the engine. Missing, or NV Access's own
+# signed file (an older payload, or a bridge setup that copied it back): it is
+# skipped - never a reason to leave the engine unsigned.
+$OptionalTargets = @('nvdaControllerClient.dll')
+function Test-Optional([string]$dll) { $OptionalTargets -contains (Split-Path $dll -Leaf) }
 
 # --------------------------------------------------------------- pinned manifest
 # Authenticode PE hashes (SHA256 of the PE image excluding the signature) of
@@ -60,6 +69,13 @@ $PinnedPeHashes = @{
 	# forwarded (patch_sapi2sr_x64_interrupt.py, sapi2sr-interrupt-spec.md).
 	'5A76A572057954B9B7BF2F2E6FBE7555F79D727760370D8423ADA6E59E4C951E' = 'sapi2sr_engine.dll x64 (1.0.0.0 + Sku bookmark fix + speakText route + skuint interrupt)'
 	'1281E2B96CD5CAC5672E8ECCD7406A3FB29F80EAA1AC3BFE99E13CBE0CFE9360' = 'sapi2sr_engine.dll x86 (1.0.0.0)'
+	# Speech history (speech-history/): our nvdaControllerClient.dll in the
+	# SAPI2SR folder, forwarding to NV Access's original (renamed
+	# nvdaControllerClient.nvaccess.dll, signed by NV Access) and publishing
+	# the texts of the processes a reader asks for in a shared ring for other
+	# programs (opt-in per process; build 1 published every process and is no
+	# longer pinned).
+	'091E988AB1ECF95FD37BA2EA420622047F1F8FE72E153AAF50C68A5C613C6679' = 'nvdaControllerClient.dll x64 (Sku speech history 2, opt-in per process)'
 }
 
 $CertSubject = 'CN=Sku NVDA voice signing (local, throwaway)'
@@ -144,6 +160,7 @@ if ($Mode -eq 'Pin') {
 if ($Mode -eq 'Verify') {
 	$healthy = $true
 	foreach ($dll in $DllPaths) {
+		if (-not (Test-Path $dll) -and (Test-Optional $dll)) { Write-Output "ABSENT    $dll (optional)"; continue }
 		if (-not (Test-Path $dll)) { Write-Output "MISSING   $dll"; $healthy = $false; continue }
 		$pe = [SkuPeHash]::Sha256($dll)
 		$pinned = $PinnedPeHashes.ContainsKey($pe)
@@ -192,11 +209,17 @@ if (Get-Process -Name 'WowClassic', 'Wow', 'WowT' -ErrorAction SilentlyContinue)
 # 1) validate all targets BEFORE touching anything
 $targets = @()   # entries: @{ Path; PeHash; NeedsSigning }
 foreach ($dll in $DllPaths) {
+	$optional = Test-Optional $dll
 	if (-not (Test-Path $dll)) {
+		if ($optional) { Write-Log "optional target absent, skipping: $dll"; continue }
 		Write-Log "ERROR: target DLL missing: $dll (install the NVDA-SAPI voice first)."
 		exit 6
 	}
 	$pe = [SkuPeHash]::Sha256($dll)
+	if (-not $PinnedPeHashes.ContainsKey($pe) -and $optional) {
+		Write-Log "optional target is not the speech-history build (PE hash $pe), left as it is: $dll"
+		continue
+	}
 	if (-not $PinnedPeHashes.ContainsKey($pe)) {
 		Write-Log "ERROR: PIN MISMATCH for $dll"
 		Write-Log "  PE hash $pe is not in the manifest. This file is NOT the version this installer was built for - refusing to sign it."

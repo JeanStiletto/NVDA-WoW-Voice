@@ -52,8 +52,8 @@ than before, choose it again.
 3. Runs the signing script (`signing/sku-nvda-voice-sign.ps1`, also bundled in
    the exe) which:
    - creates a **fresh certificate on your computer**, valid for code signing only;
-   - signs only the two voice engine DLLs, and only if their hash matches the
-     versions pinned in the script;
+   - signs only the two voice engine DLLs and the speech-history DLL (below),
+     and only if their hash matches the versions pinned in the script;
    - **deletes the private key right after signing**, so the certificate can
      never sign anything else;
    - writes a receipt and log to `C:\ProgramData\Sku\`.
@@ -77,6 +77,29 @@ entries from the SAPI list.
 To undo the signing, run the script with `-Mode Uninstall` in an administrator
 PowerShell. `-Mode Verify` shows a read-only health report.
 
+## Speech history (since 1.2)
+
+The 64-bit voice comes with a speech history: `C:\Program Files\SAPI2SR\nvdaControllerClient.dll`
+passes every call on to NV Access's original (kept next to it as
+`nvdaControllerClient.nvaccess.dll`, still signed by NV Access), and can keep
+the last 64 texts a program spoke, so another program can read them back.
+
+- Nothing is recorded unless a program asks for it, and then only the texts
+  of the one program it asks for, for as long as it keeps asking.
+- Only programs of the same Windows user can read it; it lives in memory
+  only and is gone when the last program using the voice closes.
+- Today the one program that asks is the WoW Login Tool (part of Sku), and
+  only while it drives WoW Forever's login and character screens: the game
+  narrates them, but stays silent when an item is narrated a second time, and
+  the tool then repeats what the game said the first time. Nothing is recorded
+  while you play.
+- Switched off completely with `%LOCALAPPDATA%\SAPI2SR\SpeechHistory.ini`
+  containing `[SpeechHistory]` and `Publish=0`.
+
+Source and the reading rules:
+[speech-history](https://github.com/Sku75/Sku-WoW-Addon-TBC/tree/main/dev/rework-docs/nvda-voice-signing/speech-history)
+in the Sku repository.
+
 ## Risk
 
 This is an unofficial workaround. It does not touch the game's files or memory,
@@ -89,7 +112,8 @@ your own risk.
 - **SAPI2SR** — the NVDA SAPI bridge voice, third-party software. The 64-bit
   engine bundled here is patched so it works with the current WoW text to speech
   (skips WoW's boundary bookmarks, and supports interrupting speech).
-- **NVDA Controller Client** — NV Access.
+- **NVDA Controller Client** — NV Access. The speech-history client in front
+  of it is Sku's.
 - Part of the [Sku](https://github.com/Sku75/Sku-WoW-Addon-TBC) project.
 
 ## Building

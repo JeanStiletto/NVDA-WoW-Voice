@@ -18,8 +18,13 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- 1.0 = first standalone build; bundles the SkuInstaller 5.2 payload
          (bookmark fix + skuint interrupt x64 engine, bare x86 engine).
-         1.1 = also copies the Windows OneCore voices into the SAPI voice list. -->
-    <Version>1.1</Version>
+         1.1 = also copies the Windows OneCore voices into the SAPI voice list.
+         1.2 = the SkuInstaller 5.6 payload: the bridge's speech history (our
+         x64 nvdaControllerClient.dll forwards to NV Access's original, kept as
+         nvdaControllerClient.nvaccess.dll, and records the texts of a program
+         only while another program asks for it); the signing script signs it
+         as an optional third file. -->
+    <Version>1.2</Version>
     <Company>Sku</Company>
     <Product>NVDA Voice for WoW</Product>
     <AssemblyTitle>NVDA Voice for WoW - installs the NVDA SAPI bridge voice so World of Warcraft can speak through NVDA</AssemblyTitle>
